@@ -12,7 +12,10 @@ import dushyant.android.geoquiz.models.Question;
 public class QuizActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
+
     private Button mNextButton;
+    private Button mPrevButton;
+
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = {
@@ -46,6 +49,16 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
+            }
+        });
+
+        mPrevButton = (Button) findViewById(R.id.prev_button);
+        mPrevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int a = --mCurrentIndex, b = mQuestionBank.length;
+                mCurrentIndex = ((a % b) + b) % b;
+                updateQuestion();
             }
         });
 
