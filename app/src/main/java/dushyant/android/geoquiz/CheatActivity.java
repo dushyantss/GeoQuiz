@@ -2,6 +2,7 @@ package dushyant.android.geoquiz;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,6 +23,8 @@ public class CheatActivity extends AppCompatActivity {
 
     private TextView mAnswerTextView;
     private Button mShowAnswer;
+
+    private TextView mAPITextView;
 
     public static Intent newIntent(Context packageContext, boolean answerIsTrue, boolean isCheater) {
         Intent i = new Intent(packageContext, CheatActivity.class);
@@ -58,6 +61,9 @@ public class CheatActivity extends AppCompatActivity {
                 setAnswerShownResult();
             }
         });
+
+        mAPITextView = (TextView) findViewById(R.id.api_text_view);
+        mAPITextView.setText("API " + Build.VERSION.SDK_INT);
     }
 
     private void setAnswerShownResult() {
