@@ -23,9 +23,10 @@ public class CheatActivity extends AppCompatActivity {
     private TextView mAnswerTextView;
     private Button mShowAnswer;
 
-    public static Intent newIntent(Context packageContext, boolean answerIsTrue) {
+    public static Intent newIntent(Context packageContext, boolean answerIsTrue, boolean isCheater) {
         Intent i = new Intent(packageContext, CheatActivity.class);
         i.putExtra(EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+        i.putExtra(EXTRA_ANSWER_SHOWN, isCheater);
         return i;
     }
 
@@ -39,6 +40,7 @@ public class CheatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cheat);
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
+        mAnswerShown = getIntent().getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
         if (savedInstanceState != null) {
             mAnswerShown = savedInstanceState.getBoolean(KEY_ANSWER_SHOWN);
             setAnswerShownResult();

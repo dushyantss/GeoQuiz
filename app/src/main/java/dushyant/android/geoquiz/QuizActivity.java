@@ -33,7 +33,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
 
-    private boolean mIsCheater;
+    private boolean[] mIsCheater = new boolean[mQuestionBank.length];
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
+            mIsCheater = savedInstanceState.getBooleanArray(KEY_IS_CHEATER);
         }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -70,7 +70,6 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
                 updateQuestion();
-                mIsCheater = false;
             }
         });
 
@@ -79,7 +78,8 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-                Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
+                Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue,
+                        mIsCheater[mCurrentIndex]);
                 startActivityForResult(i, REQUEST_CODE_CHEAT);
             }
         });
@@ -93,7 +93,8 @@ public class QuizActivity extends AppCompatActivity {
     private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
-        int messageResId = mIsCheater ? R.string.judgement_toast : (userPressedTrue == answerIsTrue) ? R.string.correct_toast :
+        int messageResId = mIsCheater[mCurrentIndex] ? R.string.judgement_toast
+                : (userPressedTrue == answerIsTrue) ? R.string.correct_toast :
                 R.string.incorrect_toast;
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
@@ -134,13 +135,13 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState(Bundle) called");
         outState.putInt(KEY_INDEX, mCurrentIndex);
-        outState.putBoolean(KEY_IS_CHEATER, mIsCheater);
+        outState.putBooleanArray(KEY_IS_CHEATER, mIsCheater);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_CHEAT && resultCode == RESULT_OK && data != null) {
-            mIsCheater = CheatActivity.wasAnswerShown(data);
+            mIsCheater[mCurrentIndex] = CheatActivity.wasAnswerShown(data);
         }
     }
 }
